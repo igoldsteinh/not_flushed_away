@@ -1,0 +1,160 @@
+---
+title: "Processing Results from the EI-ww model"
+author: "Isaac H Goldstein"
+date: today
+format: html
+editor: visual
+---
+
+## Overview
+
+This document shows how to use `R` code to process MCMC samples from the EI-ww model generated in `Julia` to create dataframes used to summarise frequentist metrics and visualize results. This document combines code from `scripts/process_results/process_results_stc_ei_normal_newshedding.R` and `scripts/visualize_results/viz_uci_posterior_rt.R`.
+
+## Install libraries
+
+## Load libraries, choose simulation and seed
+
+For a list of the meanings of the possible scenarios, see `vignettes/fit_ei_ww.qmd`. This document defaults to assuming `sim="G2` and `seed=1` as in the previous vignette.
+
+```{r}
+#| output: false
+### Process Results stc ei normal for newshedding 
+library(tidyverse)
+library(tidybayes)
+library(posterior)
+library(fs)
+source(here::here("src/utility_functions.R"))
+# choose key frame based on if real or simulated data
+real_data = TRUE
+if (real_data == TRUE) {
+  key_frame <- read_csv(here::here("data", "newshedding_data", "real_key.csv"))
+} else {
+  key_frame <- read_csv(here::here("data", "newshedding_data", "sim_key.csv"))
+}
+sim = "G2"
+seed = 1
+
+datafilename = key_frame %>% 
+    filter(sim_num == sim) %>% 
+    pull(obsdata_filename) %>% 
+    unique() %>%
+    as.character()
+in_order_val = FALSE
+```
+
+## load posterior samples, calculate mcmc diagnostics
+
+```{r}
+
+# calculate MCMC diagnostics after burnin
+gq_address <- paste0("results/stoch_conc_ei_normal/generated_quantities/generated_quantities_scenario", 
+                     sim, 
+                     "_seed", 
+                     seed,
+                     ".csv")
+
+posterior_samples <- read_csv(here::here(gq_address)) %>%
+  rename(.iteration = iteration,
+         .chain = chain) %>%
+  as_draws()
+
+# choose which chains to keep
+if (sim == 115 & seed == 88) {
+  chain_list = c(1,3,4)
+} else if (sim == 115 & seed == 40) {
+  chain_list = c(1,3,4)
+} else if (sim == 106 & seed == 26) {
+  chain_list = c(1,2)
+} else if (sim == 106 & seed == 88) {
+  chain_list = c(1,2,3)
+} else if (sim == "G1" & seed == 1){
+  chain_list = c(1,2,4)
+} else if (sim == "G2" & seed == 1) {
+  chain_list = c(1,2,3)
+} else {
+  chain_list = c(1,2,3,4)
+}
+subset_samples <- subset_draws(posterior_samples, chain = chain_list)
+
+mcmc_summary <- summarise_draws(subset_samples)
+```
+
+## create long format mcmc samples
+
+This code creates two dataframes: one with the mcmc samples for non-time-varying parameters, the other quantiles of the time-varying parameters.
+
+```{r}
+posterior_gq_samples_all <- subset_samples  %>%
+  pivot_longer(-c(.iteration, .chain)) %>%
+  dplyr::select( name, value)
+
+
+posterior_fixed_samples <- make_fixed_posterior_samples(posterior_gq_samples_all)
+posterior_timevarying_quantiles <- make_timevarying_posterior_quantiles(posterior_gq_samples_all)
+
+```
+
+## create posterior predictive quantiles
+
+This code creates quantiles for the posterior predictive for each day there was observed data
+
+```{r}
+post_pred_address <- paste0("results/stoch_conc_ei_normal/posterior_predictive/posterior_predictive_scenario",
+                            sim,
+                            "_seed",
+                            seed,
+                            ".csv")
+post_pred <- read_csv(here::here(post_pred_address))
+
+  simdata <- read_csv(here::here(datafilename)) %>%
+    mutate(total_conc = 1)
+
+
+post_pred_intervals <- make_post_pred_intervals(post_pred, simdata, in_order_val)
+```
+
+## Visualizing the posterior of Rt
+
+Once the time-varying quantiles have been created, we can visualize them. In this vignette, we visualize the quantiles of the G2 community at UC Irvine.
+
+```{r}
+# create time crosswalks for visualizing compartment counts
+uci_data <- read_csv(here::here("data", "uci_ww_data.csv"), 
+                     show_col_types = FALSE)
+
+G2_data <- uci_data %>% filter(place == "G2")
+
+G2_param_change_times <- seq(lump_val, max(G2_data$new_time), by = lump_val)
+G2_solve_times <- sort(union(unique(G2_data$new_time), G2_param_change_times))
+G2_num_timepoints <- length(G2_solve_times)
+G2_min_date <- min(G2_data$date) - ddays(1)
+G2_time_crosswalk <- data.frame(time = 0:(G2_num_timepoints-1), 
+                                 new_time = G2_solve_times) %>%
+  mutate(date = G2_min_date + ddays(new_time),
+         lump = floor((new_time)/lump_val))
+
+# then we filter the time-varying quantiles dataframe for the Rt quantiles and visualize
+
+G2_stc_rt_quantiles <- posterior_timevarying_quantiles %>%
+  filter(name == "rt_t_values") %>%
+  rename(lump = time) %>% 
+  dplyr::select(lump, value, .lower, .upper, .width,.point, .interval) %>%
+  right_join(G2_time_crosswalk, by = c("lump")) %>%
+  dplyr::select(lump, new_time, date, value, .lower, .upper, .width) %>%
+  distinct()
+
+# visualize results
+G2_stc_plot_posterior_rt <- G2_stc_rt_quantiles %>% 
+  filter(lump >= 0) %>%
+  ggplot(aes(x = date, y = value,  ymin = .lower, ymax = .upper)) +
+  geom_lineribbon() +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  theme_bw() +
+  ggtitle("Stc-ww G2") + 
+  my_theme + 
+  ylim(c(0,3.5)) +
+  ylab("") + 
+  xlab("Date") + 
+  theme(legend.position = "none")
+G2_stc_plot_posterior_rt
+```

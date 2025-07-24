@@ -1,0 +1,150 @@
+---
+title: "Fitting the stochastic EI-ww model"
+author: "Isaac H Goldstein"
+date: today
+format:
+  html:
+    code-fold: true
+jupyter: julia-1.9.3
+execute: 
+  eval: false
+---
+
+## Overview
+This document contains all julia code needed to generate outputs from the EIRR-ww model. 
+It combines the files `scripts/fit_models/fit_stoch_ei_normal.jl` and `scripts/generate_quantities/gq_stoch_ei_normal.jl`.
+The document `vignettes/process_ei_ww.qmd` provides the `R` code needed to create dataframes of posterior summaries used in visualizations. 
+
+First, load required `Julia` libraries
+```{julia}
+using Logging
+using DrWatson
+using JLD2
+using CSV
+using DataFrames
+using Random
+using Turing
+using not_flushed_away
+
+Logging.disable_logging(Logging.Warn)
+```
+
+## Set number of chains and desired posterior draws
+Note: the model automatically discards `n_samples` as burn-in, that is, when `n_samples=10`, 20 samples are generated, the latter half is kept as the final mcmc samples.
+```{julia}
+## Control Parameters
+n_samples = 10 #for simulations, to recreate the analysis in the paper, set to 250
+n_chains = 1 #to recreate the anaylsis in the paper, set to 4
+```
+
+## Choosing a data set to fit
+Next, choose what data set you want to fit the model to. 
+This is decided through the `sim` and `seed` variables. `sim=102`, `seed=1` means "fit to data set 1 from scenario 102". 
+The `seed` variable also decides what seed is used when the model is run. For the paper, for each simulation, we fit the model with seeds 1 to 100. 
+The `sim` and `seed` settings also determines what model priors are used, the parameters of the priors are stored in separate files in the `src` folder. 
+The meanings of `sim` are as follows:
+\begin{itemize}
+\item 
+\end{itemize}
+* `sim=102` = `Fixed`
+* `sim=115` = `Steep`
+* `sim=106` = `Total500`
+* `sim=127` = `Total2000`
+* `sim="G1"` = `UCI G1 data`
+* `sim="G2"` = `UCI G2 data`
+* `sim="E"` = `UCI E data`
+
+```{julia}
+sim = "G2"
+seed = 1
+include(projectdir("src/load_dp_stoch_ei_normal.jl"))
+
+```
+
+Next define the observation times, the times when $R_{t}$ changes, and the index of the observation times, which is used internally by the model function. 
+```{julia}
+# create times
+obstimes = long_dat[:, :new_time]
+obstimes = convert(Vector{Float64}, obstimes)
+# pick the change times 
+change_grid = 7.0
+if maximum(obstimes) % change_grid == 0
+    param_change_max = maximum(obstimes) - change_grid
+  else 
+    param_change_max = maximum(obstimes)
+  end 
+param_change_times = collect(change_grid:change_grid:param_change_max)
+unique_times = unique(obstimes)
+index = zeros(length(obstimes))
+solve_times = sort(union(unique_times, param_change_times))
+l_timepoints = length(solve_times)
+for i in 1:length(index)
+    time = obstimes[i]
+    index[i] = indexin(round(Int64,time), solve_times)[1]
+end 
+```
+
+Next load the model, which takes two files, one defining the closed form solution to the moment ODEs, and the other defining the model in Turing. 
+```{julia}
+# load model 
+include(projectdir("src/closed_form_ei_moments.jl"))
+include(projectdir("src/bayes_stoch_ei_normal.jl"))
+my_model = bayes_stoch_ei_normal(data_log_copies, obstimes, solve_times, index, param_change_times)
+```
+
+To sample from the posterior, we first generate initial values which are the MAP estimates of the model plus some Gaussian noise. 
+Note the model is non-centered, so all parameters but for one are on the scale of a standard normal random variable. 
+We find the MAP from 10 starting plces and choose the best of the 10 possible MAPs.
+
+```{julia}
+Random.seed!(seed)
+MAP_init = optimize_many_MAP(my_model, 10, 1, true)[1]
+Random.seed!(seed)
+MAP_noise = vcat(randn(length(MAP_init) - 1, n_chains), transpose(zeros(n_chains)))
+MAP_noise = [MAP_noise[:,i] for i in 1:size(MAP_noise,2)]
+init = repeat([MAP_init], n_chains) .+ 0.05 * MAP_noise
+```
+
+Finally, fit the model: 
+```{julia}
+Random.seed!(seed)
+posterior_samples = sample(my_model, NUTS(-1, 0.9), MCMCThreads(), n_samples, n_chains, discard_initial = n_samples, init_params = init)
+```
+
+The next step is to center the results (parameters in the raw results are non-centered) and generate samples to estimate quantiles from the posterior predictive:
+
+```{julia}
+missing_log_copies = repeat([missing], length(data_log_copies))
+
+my_model_forecast_missing = bayes_stoch_ei_normal(missing_log_copies, obstimes, solve_times, index, param_change_times)
+  
+# sometimes there are NAs in the final posterior, this removes those samples
+indices_to_keep = .!isnothing.(generated_quantities(my_model, posterior_samples));
+posterior_samples_randn = ChainsCustomIndex(posterior_samples, indices_to_keep);
+# create samples to estimate the posterior predictive
+Random.seed!(seed)
+predictive_randn = predict(my_model_forecast_missing, posterior_samples_randn)
+Random.seed!(seed)
+gq_randn = get_gq_chains(my_model, posterior_samples_randn);
+
+# CSV.write(projectdir("vignettes", string("generated_quantities", "_scenario", sim, "_seed", seed, ".csv")), DataFrame(gq_randn))
+# CSV.write(projectdir("vignettes", string("posterior_predictive", "_scenario", sim, "_seed", seed,  ".csv")), DataFrame(predictive_randn))
+# this dataframe is saved in order to later visualize traces of the log likelihood 
+posterior_df = DataFrame(posterior_samples)
+# CSV.write(projectdir("vignettes", string("posterior_df", "_scenario", sim, "_seed", seed, ".csv")), DataFrame(posterior_samples))
+```
+
+To sample from the prior, use the following code:
+```{julia}
+Random.seed!(seed)
+prior_samples = sample(my_model, Prior(), MCMCThreads(), 400, n_chains)
+    
+indices_to_keep = .!isnothing.(generated_quantities(my_model, prior_samples))
+prior_samples_randn = ChainsCustomIndex(prior_samples, indices_to_keep)
+    
+Random.seed!(seed)
+prior_predictive_randn = predict(my_model_forecast_missing, prior_samples_randn)
+    
+Random.seed!(seed)
+prior_gq_randn = get_gq_chains(my_model, prior_samples_randn)
+```
