@@ -1,0 +1,318 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 13.1' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     10714,        310]
+NotebookOptionsPosition[      9442,        278]
+NotebookOutlinePosition[      9837,        294]
+CellTagsIndexPosition[      9794,        291]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["matrix for EI only", "Item",
+ CellChangeTimes->{{3.9082985553855133`*^9, 
+  3.9082985855661373`*^9}},ExpressionUUID->"2a7b7d3d-49e1-441c-86cb-\
+45e16354f7b0"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ei_matrix", " ", "=", " ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "gamma"}], ",", " ", "alpha", ",", " ", "0", ",", " ", 
+       "0", ",", " ", "0"}], "}"}], ",", " ", "\[IndentingNewLine]", 
+     "\t\t      ", 
+     RowBox[{"{", 
+      RowBox[{"gamma", ",", " ", 
+       RowBox[{"-", "nu"}], ",", " ", "0", ",", "0", ",", "0"}], "}"}], ",", 
+     "\[IndentingNewLine]", "\t\t      ", 
+     RowBox[{"{", 
+      RowBox[{"gamma", ",", " ", "alpha", ",", " ", 
+       RowBox[{
+        RowBox[{"-", "2"}], "*", "gamma"}], ",", " ", "0", ",", " ", 
+       RowBox[{"2", "*", "alpha"}]}], "}"}], ",", "\[IndentingNewLine]", 
+     "\t\t     ", 
+     RowBox[{"{", 
+      RowBox[{"gamma", ",", " ", "nu", ",", " ", "0", ",", " ", 
+       RowBox[{
+        RowBox[{"-", "2"}], " ", "*", " ", "nu"}], ",", " ", 
+       RowBox[{"2", "*", " ", "gamma"}]}], "}"}], ",", "\[IndentingNewLine]", 
+     "\t\t     ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "gamma"}], ",", " ", "0", ",", " ", "gamma", ",", " ", 
+       "alpha", ",", " ", 
+       RowBox[{
+        RowBox[{"-", "nu"}], " ", "-", " ", "gamma"}]}], "}"}]}], "}"}], "//",
+    "MatrixForm"}]}]], "Input",
+ CellChangeTimes->{{3.9082985891390343`*^9, 3.908298657004573*^9}},
+ CellLabel->"In[1]:=",ExpressionUUID->"292639a0-e04b-423e-9872-bd2f9aa16c4e"],
+
+Cell[BoxData[
+ TagBox[
+  RowBox[{"(", "\[NoBreak]", GridBox[{
+     {
+      RowBox[{"-", "gamma"}], "alpha", "0", "0", "0"},
+     {"gamma", 
+      RowBox[{"-", "nu"}], "0", "0", "0"},
+     {"gamma", "alpha", 
+      RowBox[{
+       RowBox[{"-", "2"}], " ", "gamma"}], "0", 
+      RowBox[{"2", " ", "alpha"}]},
+     {"gamma", "nu", "0", 
+      RowBox[{
+       RowBox[{"-", "2"}], " ", "nu"}], 
+      RowBox[{"2", " ", "gamma"}]},
+     {
+      RowBox[{"-", "gamma"}], "0", "gamma", "alpha", 
+      RowBox[{
+       RowBox[{"-", "gamma"}], "-", "nu"}]}
+    },
+    GridBoxAlignment->{"Columns" -> {{Center}}, "Rows" -> {{Baseline}}},
+    GridBoxSpacings->{"Columns" -> {
+        Offset[0.27999999999999997`], {
+         Offset[0.7]}, 
+        Offset[0.27999999999999997`]}, "Rows" -> {
+        Offset[0.2], {
+         Offset[0.4]}, 
+        Offset[0.2]}}], "\[NoBreak]", ")"}],
+  Function[BoxForm`e$, 
+   MatrixForm[BoxForm`e$]]]], "Output",
+ CellChangeTimes->{3.9082986619600267`*^9},
+ CellLabel->
+  "Out[1]//MatrixForm=",ExpressionUUID->"6b70a1af-5e0b-472a-880f-\
+6f05d7b654a8"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Export", "[", 
+  RowBox[{
+  "\"\<documents/stoch_wastewater/ei_matrixexp_cform.txt\>\"", ",", " ", 
+   RowBox[{"CForm", "[", 
+    RowBox[{"Simplify", "[", 
+     RowBox[{
+      RowBox[{"MatrixExp", "[", 
+       RowBox[{
+        TagBox[
+         RowBox[{"(", "\[NoBreak]", GridBox[{
+            {
+             RowBox[{"-", "gamma"}], "alpha", "0", "0", "0"},
+            {"gamma", 
+             RowBox[{"-", "nu"}], "0", "0", "0"},
+            {"gamma", "alpha", 
+             RowBox[{
+              RowBox[{"-", "2"}], " ", "gamma"}], "0", 
+             RowBox[{"2", " ", "alpha"}]},
+            {"gamma", "nu", "0", 
+             RowBox[{
+              RowBox[{"-", "2"}], " ", "nu"}], 
+             RowBox[{"2", " ", "gamma"}]},
+            {
+             RowBox[{"-", "gamma"}], "0", "gamma", "alpha", 
+             RowBox[{
+              RowBox[{"-", "gamma"}], "-", "nu"}]}
+           },
+           GridBoxAlignment->{"Columns" -> {{Center}}, "Rows" -> {{Baseline}}},
+           GridBoxSpacings->{"Columns" -> {
+               Offset[0.27999999999999997`], {
+                Offset[0.7]}, 
+               Offset[0.27999999999999997`]}, "Rows" -> {
+               Offset[0.2], {
+                Offset[0.4]}, 
+               Offset[0.2]}}], "\[NoBreak]", ")"}],
+         Function[BoxForm`e$, 
+          MatrixForm[BoxForm`e$]]], "t"}], "]"}], "//", "MatrixForm"}], "]"}],
+     "]"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.908298676175684*^9, 3.9082987218100653`*^9}, {
+  3.9082987882683907`*^9, 3.908298831648333*^9}},
+ CellLabel->"In[4]:=",ExpressionUUID->"fa8a26e5-eb65-4e97-97cb-afba4b3eadf9"],
+
+Cell[BoxData["\<\"documents/stoch_wastewater/ei_matrixexp_cform.txt\"\>"], \
+"Output",
+ CellChangeTimes->{3.9082988350368347`*^9},
+ CellLabel->"Out[4]=",ExpressionUUID->"69cdc9db-15e9-442d-8bf9-e2f3fd167506"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ei_matrix2", " ", "=", " ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "gamma"}], ",", " ", "nu", ",", " ", "0", ",", " ", "0", 
+       ",", " ", "0"}], "}"}], ",", " ", "\[IndentingNewLine]", "\t\t      ", 
+     
+     RowBox[{"{", 
+      RowBox[{"gamma", ",", " ", 
+       RowBox[{"-", "nu"}], ",", " ", "0", ",", "0", ",", "0"}], "}"}], ",", 
+     "\[IndentingNewLine]", "\t\t      ", 
+     RowBox[{"{", 
+      RowBox[{"gamma", ",", " ", "nu", ",", " ", 
+       RowBox[{
+        RowBox[{"-", "2"}], "*", "gamma"}], ",", " ", "0", ",", " ", 
+       RowBox[{"2", "*", "nu"}]}], "}"}], ",", "\[IndentingNewLine]", 
+     "\t\t     ", 
+     RowBox[{"{", 
+      RowBox[{"gamma", ",", " ", "nu", ",", " ", "0", ",", " ", 
+       RowBox[{
+        RowBox[{"-", "2"}], " ", "*", " ", "nu"}], ",", " ", 
+       RowBox[{"2", "*", " ", "gamma"}]}], "}"}], ",", "\[IndentingNewLine]", 
+     "\t\t     ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "gamma"}], ",", " ", "0", ",", " ", "gamma", ",", " ", 
+       "nu", ",", " ", 
+       RowBox[{
+        RowBox[{"-", "nu"}], " ", "-", " ", "gamma"}]}], "}"}]}], "}"}], "//",
+    "MatrixForm"}]}]], "Input",
+ CellChangeTimes->{{3.9089933126261578`*^9, 3.908993324658402*^9}},
+ CellLabel->"In[1]:=",ExpressionUUID->"fc58487f-25dd-48c1-b281-b0b8fdd090bf"],
+
+Cell[BoxData[
+ TagBox[
+  RowBox[{"(", "\[NoBreak]", GridBox[{
+     {
+      RowBox[{"-", "gamma"}], "nu", "0", "0", "0"},
+     {"gamma", 
+      RowBox[{"-", "nu"}], "0", "0", "0"},
+     {"gamma", "nu", 
+      RowBox[{
+       RowBox[{"-", "2"}], " ", "gamma"}], "0", 
+      RowBox[{"2", " ", "nu"}]},
+     {"gamma", "nu", "0", 
+      RowBox[{
+       RowBox[{"-", "2"}], " ", "nu"}], 
+      RowBox[{"2", " ", "gamma"}]},
+     {
+      RowBox[{"-", "gamma"}], "0", "gamma", "nu", 
+      RowBox[{
+       RowBox[{"-", "gamma"}], "-", "nu"}]}
+    },
+    GridBoxAlignment->{"Columns" -> {{Center}}, "Rows" -> {{Baseline}}},
+    GridBoxSpacings->{"Columns" -> {
+        Offset[0.27999999999999997`], {
+         Offset[0.7]}, 
+        Offset[0.27999999999999997`]}, "Rows" -> {
+        Offset[0.2], {
+         Offset[0.4]}, 
+        Offset[0.2]}}], "\[NoBreak]", ")"}],
+  Function[BoxForm`e$, 
+   MatrixForm[BoxForm`e$]]]], "Output",
+ CellChangeTimes->{3.9089933282656527`*^9},
+ CellLabel->
+  "Out[1]//MatrixForm=",ExpressionUUID->"4a9943fa-a61a-43b0-8eaa-\
+c496c99ee7d2"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Export", "[", 
+  RowBox[{
+  "\"\<documents/stoch_wastewater/ei_matrixexp_cform_nu=alpha.txt\>\"", ",", 
+   " ", 
+   RowBox[{"CForm", "[", 
+    RowBox[{"Simplify", "[", 
+     RowBox[{
+      RowBox[{"MatrixExp", "[", 
+       RowBox[{
+        TagBox[
+         RowBox[{"(", "\[NoBreak]", GridBox[{
+            {
+             RowBox[{"-", "gamma"}], "nu", "0", "0", "0"},
+            {"gamma", 
+             RowBox[{"-", "nu"}], "0", "0", "0"},
+            {"gamma", "nu", 
+             RowBox[{
+              RowBox[{"-", "2"}], " ", "gamma"}], "0", 
+             RowBox[{"2", " ", "nu"}]},
+            {"gamma", "nu", "0", 
+             RowBox[{
+              RowBox[{"-", "2"}], " ", "nu"}], 
+             RowBox[{"2", " ", "gamma"}]},
+            {
+             RowBox[{"-", "gamma"}], "0", "gamma", "nu", 
+             RowBox[{
+              RowBox[{"-", "gamma"}], "-", "nu"}]}
+           },
+           GridBoxAlignment->{"Columns" -> {{Center}}, "Rows" -> {{Baseline}}},
+           GridBoxSpacings->{"Columns" -> {
+               Offset[0.27999999999999997`], {
+                Offset[0.7]}, 
+               Offset[0.27999999999999997`]}, "Rows" -> {
+               Offset[0.2], {
+                Offset[0.4]}, 
+               Offset[0.2]}}], "\[NoBreak]", ")"}],
+         Function[BoxForm`e$, 
+          MatrixForm[BoxForm`e$]]], "t"}], "]"}], "//", "MatrixForm"}], "]"}],
+     "]"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.908993350142453*^9, 3.908993371840736*^9}},
+ CellLabel->"In[2]:=",ExpressionUUID->"d46fa5a5-a119-4804-8e47-bea73422442d"],
+
+Cell[BoxData["\<\"documents/stoch_wastewater/ei_matrixexp_cform_nu=alpha.txt\"\
+\>"], "Output",
+ CellChangeTimes->{3.9089933757042303`*^9},
+ CellLabel->"Out[2]=",ExpressionUUID->"481a7042-20b5-40da-8581-706db453edf6"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{808, 706},
+WindowMargins->{{18, Automatic}, {-166, Automatic}},
+FrontEndVersion->"13.1 for Mac OS X ARM (64-bit) (June 16, 2022)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"2285187b-874f-4f57-9259-13d66cd6b0e3"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 164, 3, 32, "Item",ExpressionUUID->"2a7b7d3d-49e1-441c-86cb-45e16354f7b0"],
+Cell[CellGroupData[{
+Cell[769, 29, 1387, 34, 115, "Input",ExpressionUUID->"292639a0-e04b-423e-9872-bd2f9aa16c4e"],
+Cell[2159, 65, 1073, 33, 119, "Output",ExpressionUUID->"6b70a1af-5e0b-472a-880f-6f05d7b654a8"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3269, 103, 1626, 41, 136, "Input",ExpressionUUID->"fa8a26e5-eb65-4e97-97cb-afba4b3eadf9"],
+Cell[4898, 146, 208, 3, 34, "Output",ExpressionUUID->"69cdc9db-15e9-442d-8bf9-e2f3fd167506"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[5143, 154, 1376, 34, 115, "Input",ExpressionUUID->"fc58487f-25dd-48c1-b281-b0b8fdd090bf"],
+Cell[6522, 190, 1061, 33, 119, "Output",ExpressionUUID->"4a9943fa-a61a-43b0-8eaa-c496c99ee7d2"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[7620, 228, 1574, 41, 136, "Input",ExpressionUUID->"d46fa5a5-a119-4804-8e47-bea73422442d"],
+Cell[9197, 271, 217, 3, 82, "Output",ExpressionUUID->"481a7042-20b5-40da-8581-706db453edf6"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
