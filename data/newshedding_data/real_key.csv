@@ -1,0 +1,7 @@
+sim_num,sim_name,sim_filename,obsdata_filename,fulldata_filename,N,E_init,gamma,nu,eta,r0,change_points
+E,E,NA,data/E_data.csv,data/newshedding_data/E_data.csv,NA,NA,NA,NA,NA,NA,NA
+G1,G1,NA,data/G1_data.csv,data/newshedding_data/G1_data.csv,NA,NA,NA,NA,NA,NA,NA
+G2,G2,NA,data/G2_data.csv,data/newshedding_data/G2_data.csv,NA,NA,NA,NA,NA,NA,NA
+E_rt1,E_rt1,NA,data/E_data.csv,data/newshedding_data/E_data.csv,NA,NA,NA,NA,NA,NA,NA
+G1_rt1,G1_rt1,NA,data/G1_data.csv,data/newshedding_data/G1_data.csv,NA,NA,NA,NA,NA,NA,NA
+G2_rt1,G2_rt1,NA,data/G2_data.csv,data/newshedding_data/G2_data.csv,NA,NA,NA,NA,NA,NA,NA
