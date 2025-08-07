@@ -1,5 +1,5 @@
 # not_flushed_away
-This repository has all code needed to recreate the analyses conducted in the paper The Signal is Not Flushed Away: Inferring the Effective Reproduction Number From Wastewater Data in Small Populations.
+This repository has all code needed to recreate the analyses conducted in the paper [The Signal is Not Flushed Away: Inferring the Effective Reproduction Number From Wastewater Data in Small Populations](https://arxiv.org/abs/2508.03959).
 Models were fit in `Julia`, while simulation of synthetic data, and visualization of results was done in `R`. 
 All results files needed to reproduce the figures are in the repo, individual simulation results are excluded for the sake of storage.
 
