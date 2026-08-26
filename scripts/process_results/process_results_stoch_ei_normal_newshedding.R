@@ -5,7 +5,7 @@ library(posterior)
 library(fs)
 source("src/utility_functions.R")
 # choose key frame based on if real or simulated data
-real_data = FALSE
+real_data = TRUE
 if (real_data == TRUE) {
   key_frame <- read_csv(here::here("data", "newshedding_data", "real_key.csv"))
 } else {
@@ -13,8 +13,8 @@ if (real_data == TRUE) {
 }
 args <- commandArgs(trailingOnly=TRUE)
 if (length(args) == 0) {
-  sim = 115
-  seed = 40
+  sim = "E_rt0.75"
+  seed = 97
 } else {
   sim <- as.integer(args[1])
   seed <- as.integer(args[2])
@@ -32,7 +32,7 @@ if(priors_only == TRUE) {
   
   priorname <- paste0("prior_generated_quantities_scenario", sim, "_seed", seed, ".csv")
   prior_gq_samples_all <- read_csv(here::here("results",
-                                              "stoch_conc_ei_normal",
+                                              "stoch_ei_normal",
                                               priorname)) %>%
     pivot_longer(-c(iteration, chain)) %>%
     select( name, value)
@@ -45,24 +45,23 @@ if(priors_only == TRUE) {
   
   prior_samp_name <- paste0("prior_samples_scenario", sim , "_seed", seed, ".csv")
   prior_timevarying_name <- paste0("prior_timevaryingquantiles_scenario", sim, "_seed", seed, ".csv")
-  write_csv(priors, here::here("results", "stoch_conc_ei_normal", prior_samp_name))
-  write_csv(prior_timevarying_quantiles, here::here("results", "stoch_conc_ei_normal", prior_timevarying_name))
+  write_csv(priors, here::here("results", "stoch_ei_normal", prior_samp_name))
+  write_csv(prior_timevarying_quantiles, here::here("results", "stoch_ei_normal", prior_timevarying_name))
   
   # make prior predictive intervals 
-  prior_pred_address <- paste0("results/stoch_conc_ei_normal/prior_predictive_scenario",
+  prior_pred_address <- paste0("results/stoch_ei_normal/prior_predictive_scenario",
                                sim,
                                "_seed",
                                seed,
                                ".csv")
-  prior_pred <- read_csv(prior_pred_address)
-  
+  prior_pred <- read_csv(here::here(prior_pred_address))
     simdata <- read_csv(here::here(datafilename)) %>% 
       mutate(total_conc = 1)
     
 
   prior_pred_intervals <- make_post_pred_intervals(prior_pred, simdata)
   
-  prior_pred_interval_address <- paste0("results/stoch_conc_ei_normal/prior_predictive_intervals_scenario",
+  prior_pred_interval_address <- paste0("results/stoch_ei_normal/prior_predictive_intervals_scenario",
                                         sim,
                                         "_seed",
                                         seed,
@@ -79,7 +78,7 @@ if(priors_only == TRUE) {
 
 
 # calculate MCMC diagnostics after burnin
-gq_address <- paste0("results/stoch_conc_ei_normal/generated_quantities/generated_quantities_scenario", 
+gq_address <- paste0("results/stoch_ei_normal/generated_quantities/generated_quantities_scenario", 
                      sim, 
                      "_seed", 
                      seed,
@@ -110,7 +109,7 @@ subset_samples <- subset_draws(posterior_samples, chain = chain_list)
 
 mcmc_summary <- summarise_draws(subset_samples)
 
-mcmc_summary_address <- paste0("results/stoch_conc_ei_normal/mcmc_summaries/mcmc_summary_scenario", 
+mcmc_summary_address <- paste0("results/stoch_ei_normal/mcmc_summaries/mcmc_summary_scenario", 
                                sim, 
                                "_seed",
                                seed,
@@ -118,7 +117,7 @@ mcmc_summary_address <- paste0("results/stoch_conc_ei_normal/mcmc_summaries/mcmc
 write_csv(mcmc_summary, mcmc_summary_address)
 
 # lp trace plot -----------------------------------------------------------
-lp_df <-read_csv(here::here("results", "stoch_conc_ei_normal", "generated_quantities", paste0("posterior_df_scenario",
+lp_df <-read_csv(here::here("results", "stoch_ei_normal", "generated_quantities", paste0("posterior_df_scenario",
                                                                                        sim, 
                                                                                        "_seed",
                                                                                        seed,
@@ -129,7 +128,7 @@ trace_plot <- lp_df %>%
   theme_bw() + 
   ggtitle("Stoch Conc Ei Normal LP Trace")
 
-# ggsave(here::here("results", "stoch_conc_ei_normal", "mcmc_summaries", paste0("trace_scenario", sim, "_seed", seed, ".png" )), trace_plot, width = 5, height = 5)
+# ggsave(here::here("results", "stoch_ei_normal", "mcmc_summaries", paste0("trace_scenario", sim, "_seed", seed, ".png" )), trace_plot, width = 5, height = 5)
 
 # create long format fixed samples and time-varying quantiles -----------------
 posterior_gq_samples_all <- subset_samples  %>%
@@ -139,7 +138,7 @@ posterior_gq_samples_all <- subset_samples  %>%
 
 posterior_fixed_samples <- make_fixed_posterior_samples(posterior_gq_samples_all)
 
-fixed_samples_address <- paste0("results/stoch_conc_ei_normal/generated_quantities/posterior_fixed_samples_scenario",
+fixed_samples_address <- paste0("results/stoch_ei_normal/generated_quantities/posterior_fixed_samples_scenario",
                                 sim, 
                                 "_seed",
                                 seed,
@@ -151,7 +150,7 @@ write_csv(posterior_fixed_samples, fixed_samples_address)
 posterior_timevarying_quantiles <- make_timevarying_posterior_quantiles(posterior_gq_samples_all)
 
 
-timevarying_quantiles_address <- paste0("results/stoch_conc_ei_normal/generated_quantities/posterior_timevarying_quantiles_scenario",
+timevarying_quantiles_address <- paste0("results/stoch_ei_normal/generated_quantities/posterior_timevarying_quantiles_scenario",
                                         sim,
                                         "_seed",
                                         seed,
@@ -166,7 +165,7 @@ rm(posterior_gq_samples_all)
 
 # create posterior predictive quantiles -----------------------------------
 # preserve if needed, but comment out for now due to possiblity of whacky numerical errors (not our fault)
-post_pred_address <- paste0("results/stoch_conc_ei_normal/posterior_predictive/posterior_predictive_scenario",
+post_pred_address <- paste0("results/stoch_ei_normal/posterior_predictive/posterior_predictive_scenario",
                             sim,
                             "_seed",
                             seed,
@@ -179,13 +178,13 @@ post_pred <- read_csv(here::here(post_pred_address))
 
 post_pred_intervals <- make_post_pred_intervals(post_pred, simdata, in_order_val)
 
-post_pred_interval_address <- paste0("results/stoch_conc_ei_normal/posterior_predictive/posterior_predictive_intervals_scenario",
+post_pred_interval_address <- paste0("results/stoch_ei_normal/posterior_predictive/posterior_predictive_intervals_scenario",
                                      sim,
                                      "_seed",
                                      seed,
                                      ".csv")
 # 
-# write_csv(post_pred_intervals, post_pred_interval_address)
+write_csv(post_pred_intervals, post_pred_interval_address)
 # 
 # 
 # 

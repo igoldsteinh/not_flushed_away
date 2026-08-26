@@ -4,10 +4,15 @@ library(tidybayes)
 library(posterior)
 library(fs)
 source("src/utility_functions.R")
-key_frame <- read_csv(here::here("data", "newshedding_data", "sim_key.csv"))
+real_data = TRUE
+if (real_data == TRUE) {
+  key_frame <- read_csv(here::here("data", "newshedding_data", "real_key.csv"))
+} else {
+  key_frame <- read_csv(here::here("data", "newshedding_data", "sim_key.csv"))
+}
 args <- commandArgs(trailingOnly=TRUE)
 if (length(args) == 0) {
-  sim = 115
+  sim = "E_rt0.75"
   seed = 1
 } else {
   sim <- as.integer(args[1])

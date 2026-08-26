@@ -266,3 +266,153 @@ if sim == "E_rt1"
   const I_init_sd = 0.05
   const I_init_mean = log(9)
 end 
+if sim == "Gcombined"
+  all_dat = CSV.read(projectdir("data", "Gcombined_data.csv"), DataFrame)
+  long_dat = all_dat
+  ## Define Priors
+  const gamma_sd = 0.2
+  const gamma_mean = log(1/4) 
+  const nu_sd = 0.2
+  const nu_mean = log(1/7) 
+  const eta_sd = 0.2
+  const eta_mean = log(1/18)
+  const rho_conc_sd =  1.0
+  const rho_conc_mean = log(1)
+  const sigma_rt_sd = 0.1
+  const sigma_rt_mean = log(0.15)
+  const rt_init_sd = 0.1
+  const rt_init_mean = log(0.5)
+  const tau_sd = 1
+  const tau_mean = 0.0
+  data_log_copies = long_dat[:, :log_mean_conc]
+  grid_size = 1.0
+  const E_init_sd = 0.05
+  const E_init_mean = log(13)
+  const I_init_sd = 0.05
+  const I_init_mean = log(22)
+end 
+if sim == "Gcombined_rt1"
+  all_dat = CSV.read(projectdir("data", "Gcombined_data.csv"), DataFrame)
+  long_dat = all_dat
+  ## Define Priors
+  const gamma_sd = 0.2
+  const gamma_mean = log(1/4) 
+  const nu_sd = 0.2
+  const nu_mean = log(1/7) 
+  const eta_sd = 0.2
+  const eta_mean = log(1/18)
+  const rho_conc_sd =  1.0
+  const rho_conc_mean = log(1)
+  const sigma_rt_sd = 0.1
+  const sigma_rt_mean = log(0.15)
+  const rt_init_sd = 0.1
+  const rt_init_mean = log(1)
+  const tau_sd = 1
+  const tau_mean = 0.0
+  data_log_copies = long_dat[:, :log_mean_conc]
+  grid_size = 1.0
+  const E_init_sd = 0.05
+  const E_init_mean = log(13)
+  const I_init_sd = 0.05
+  const I_init_mean = log(22)
+end 
+if sim == "Gcombined_trunc"
+  all_dat = CSV.read(projectdir("data", "Gcombined_data_trunc.csv"), DataFrame)
+  long_dat = all_dat
+  ## Define Priors
+  const gamma_sd = 0.2
+  const gamma_mean = log(1/4) 
+  const nu_sd = 0.2
+  const nu_mean = log(1/7) 
+  const eta_sd = 0.2
+  const eta_mean = log(1/18)
+  const rho_conc_sd =  1.0
+  const rho_conc_mean = log(1)
+  const sigma_rt_sd = 0.1
+  const sigma_rt_mean = log(0.15)
+  const rt_init_sd = 0.1
+  const rt_init_mean = log(0.5)
+  const tau_sd = 1
+  const tau_mean = 0.0
+  data_log_copies = long_dat[:, :log_mean_conc]
+  grid_size = 1.0
+  const E_init_sd = 0.05
+  const E_init_mean = log(13)
+  const I_init_sd = 0.05
+  const I_init_mean = log(22)
+end 
+if sim == "E_trunc"
+  all_dat = CSV.read(projectdir("data", "E_data_trunc.csv"), DataFrame)
+  long_dat = all_dat
+  ## Define Priors
+  const gamma_sd = 0.2
+  const gamma_mean = log(1/4) 
+  const nu_sd = 0.2
+  const nu_mean = log(1/7) 
+  const eta_sd = 0.2
+  const eta_mean = log(1/18)
+  const rho_conc_sd =  1.0
+  const rho_conc_mean = log(1)
+  const sigma_rt_sd = 0.1
+  const sigma_rt_mean = log(0.15)
+  const rt_init_sd = 0.1
+  const rt_init_mean = log(0.5)
+  const tau_sd = 1
+  const tau_mean = 0.0
+  data_log_copies = long_dat[:, :log_conc]
+  grid_size = 1.0
+  const E_init_sd = 0.05
+  const E_init_mean = log(5)
+  const I_init_sd = 0.05
+  const I_init_mean = log(9)
+end 
+if sim == "Gcombined_rt0.75"
+  all_dat = CSV.read(projectdir("data", "Gcombined_data.csv"), DataFrame)
+  long_dat = all_dat
+  ## Define Priors
+  const gamma_sd = 0.2
+  const gamma_mean = log(1/4) 
+  const nu_sd = 0.2
+  const nu_mean = log(1/7) 
+  const eta_sd = 0.2
+  const eta_mean = log(1/18)
+  const rho_conc_sd =  1.0
+  const rho_conc_mean = log(1)
+  const sigma_rt_sd = 0.1
+  const sigma_rt_mean = log(0.15)
+  const rt_init_sd = 0.1
+  const rt_init_mean = log(0.75)
+  const tau_sd = 1
+  const tau_mean = 0.0
+  data_log_copies = long_dat[:, :log_mean_conc]
+  grid_size = 1.0
+  const E_init_sd = 0.05
+  const E_init_mean = log(13)
+  const I_init_sd = 0.05
+  const I_init_mean = log(22)
+end 
+if sim == "E_rt0.75"
+  all_dat = CSV.read(projectdir("data", "uci_ww_data.csv"), DataFrame)
+  long_dat = filter(row -> row.place == "E", all_dat)
+  ## Define Priors
+  const gamma_sd = 0.2
+  const gamma_mean = log(1/4) 
+  const nu_sd = 0.2
+  const nu_mean = log(1/7) 
+  const eta_sd = 0.2
+  const eta_mean = log(1/18)
+  const rho_conc_sd =  1.0
+  const rho_conc_mean = log(1)
+  const sigma_rt_sd = 0.1
+  const sigma_rt_mean = log(0.15)
+  const rt_init_sd = 0.1
+  const rt_init_mean = log(0.75)
+  const tau_sd = 1
+  const tau_mean = 0.0
+  data_log_copies = long_dat[:, :log_conc]
+  grid_size = 1.0
+  const E_init_sd = 0.05
+  const E_init_mean = log(5)
+  const I_init_sd = 0.05
+  const I_init_mean = log(9)
+end 

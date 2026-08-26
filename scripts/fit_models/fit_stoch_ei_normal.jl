@@ -9,7 +9,7 @@ using Turing
 using not_flushed_away
 sim =
 if length(ARGS) == 0
-  "G1"
+  "Gcombined_trunc"
 else
   parse(Int64, ARGS[1])
 end

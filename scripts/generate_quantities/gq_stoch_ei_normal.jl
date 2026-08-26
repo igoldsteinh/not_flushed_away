@@ -10,14 +10,14 @@ using not_flushed_away
 # using GenericLinearAlgebra
 sim =
 if length(ARGS) == 0
-  115
+  "E_rt0.75"
 else
   parse(Int64, ARGS[1])
 end
 
 seed = 
 if length(ARGS) == 0
-  1
+  97
 else 
   parse(Int64, ARGS[2])
 end 
