@@ -102,6 +102,14 @@ if (sim == 115 & seed == 88) {
   chain_list = c(1,2,4)
 } else if (sim == "G2" & seed == 1) {
   chain_list = c(1,2,3)
+} else if (sim == 140 & seed == 67) {
+  chain_list = c(1,2,3)
+} else if (sim == 140 & seed == 87) {
+  chain_list = c(1,2,3)
+} else if (sim == 140 & seed == 97) {
+  chain_list = c(1,3,4)
+} else if (sim == 160 & seed == 98) {
+  chain_list = c(2,3,4)
 } else {
   chain_list = c(1,2,3,4)
 }
